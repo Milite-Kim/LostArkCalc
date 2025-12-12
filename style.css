@@ -1,0 +1,248 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f0;
+    color: #2a2a2a;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #1a1a1a;
+    margin-bottom: 30px;
+    font-size: 2em;
+    padding: 20px;
+    background-color: #ffffff;
+    border-bottom: 3px solid #3a3a3a;
+}
+
+h2 {
+    color: #2a2a2a;
+    font-size: 1.4em;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #d0d0c8;
+}
+
+h3 {
+    color: #3a3a3a;
+    font-size: 1.1em;
+    margin-bottom: 15px;
+}
+
+.input-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.stat-group {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0d8;
+}
+
+.input-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 8px 0;
+}
+
+.input-row label {
+    flex: 1;
+    color: #4a4a4a;
+    font-size: 0.95em;
+}
+
+.input-row input[type="number"],
+.input-row select {
+    flex: 0 0 150px;
+    padding: 8px 12px;
+    border: 1px solid #c0c0b8;
+    border-radius: 4px;
+    background-color: #fafaf8;
+    color: #2a2a2a;
+    font-size: 0.95em;
+}
+
+.input-row input[type="number"]:focus,
+.input-row select:focus {
+    outline: none;
+    border-color: #6a6a6a;
+    background-color: #ffffff;
+}
+
+.input-row input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.arkpassive-section {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0d8;
+    margin-bottom: 30px;
+}
+
+.tier-group {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #fafaf8;
+    border-radius: 6px;
+    border: 1px solid #e8e8e0;
+}
+
+.passive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.passive-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.passive-item label {
+    color: #3a3a3a;
+    font-weight: 500;
+    font-size: 0.95em;
+}
+
+.passive-item select {
+    padding: 8px 12px;
+    border: 1px solid #c0c0b8;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #2a2a2a;
+    font-size: 0.9em;
+    cursor: pointer;
+}
+
+.passive-item select:focus {
+    outline: none;
+    border-color: #6a6a6a;
+}
+
+.passive-item input[type="checkbox"],
+.passive-item input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.result-section {
+    text-align: center;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0d8;
+}
+
+#calculate-btn {
+    background-color: #3a3a3a;
+    color: #ffffff;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.1em;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-bottom: 20px;
+}
+
+#calculate-btn:hover {
+    background-color: #2a2a2a;
+}
+
+#calculate-btn:active {
+    background-color: #1a1a1a;
+}
+
+#result-display {
+    font-size: 2em;
+    font-weight: bold;
+    color: #1a1a1a;
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #f5f5f0;
+    border-radius: 6px;
+    display: none;
+}
+
+#detailed-result {
+    text-align: left;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #fafaf8;
+    border-radius: 6px;
+    border: 1px solid #e8e8e0;
+    display: none;
+}
+
+#detailed-result h3 {
+    color: #2a2a2a;
+    margin-bottom: 10px;
+}
+
+#detailed-result p {
+    color: #4a4a4a;
+    margin: 8px 0;
+    font-size: 0.95em;
+}
+
+.error-message {
+    background-color: #fff5f5;
+    color: #c53030;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #feb2b2;
+    margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+        padding: 15px;
+    }
+
+    .input-section {
+        grid-template-columns: 1fr;
+    }
+
+    .passive-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #calculate-btn {
+        width: 100%;
+        padding: 12px 20px;
+    }
+}

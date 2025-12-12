@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로스트아크 딜 기댓값 계산기</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>로스트아크 딜 기댓값 계산기</h1>
+        
+        <!-- 입력 섹션 -->
+        <div class="input-section">
+            <!-- 추가 피해 -->
+            <div class="stat-group">
+                <h2>추가 피해</h2>
+                <div class="input-row">
+                    <label>무기 추피 (%)</label>
+                    <input type="number" id="weapon-additional" value="30" step="0.1">
+                </div>
+                <div class="input-row">
+                    <label>목걸이 추피 (%)</label>
+                    <input type="number" id="necklace-additional" value="0" step="0.1">
+                </div>
+            </div>
+
+            <!-- 치명타 적중률 -->
+            <div class="stat-group">
+                <h2>치명타 적중률</h2>
+                <div class="input-row">
+                    <label>치명 스탯</label>
+                    <input type="number" id="crit-stat" value="0" step="1">
+                </div>
+                <div class="input-row">
+                    <label>아드레날린 각인</label>
+                    <select id="adrenaline">
+                        <option value="0">사용 안함 (0%)</option>
+                        <option value="14">유각 0단계 (14%)</option>
+                        <option value="15.5">유각 1단계 (15.5%)</option>
+                        <option value="17">유각 2단계 (17%)</option>
+                        <option value="18.5">유각 3단계 (18.5%)</option>
+                        <option value="20">유각 4단계 (20%)</option>
+                    </select>
+                </div>
+                <div class="input-row">
+                    <label>치적 시너지</label>
+                    <select id="crit-synergy">
+                        <option value="0">0%</option>
+                        <option value="10">10%</option>
+                        <option value="20">20%</option>
+                    </select>
+                </div>
+                <div class="input-row">
+                    <label>반지 치적 (%)</label>
+                    <input type="number" id="ring-crit-rate" value="0" step="0.1">
+                </div>
+                <div class="input-row">
+                    <label>팔찌 치적 (%)</label>
+                    <input type="number" id="bracelet-crit-rate" value="0" step="0.1">
+                </div>
+                <div class="input-row">
+                    <label>캐릭터 자체 치적 (%)</label>
+                    <input type="number" id="character-crit-rate" value="0" step="0.1">
+                </div>
+            </div>
+
+            <!-- 치명타 피해량 -->
+            <div class="stat-group">
+                <h2>치명타 피해량</h2>
+                <div class="input-row">
+                    <label>캐릭터 자체 치피 (%)</label>
+                    <input type="number" id="character-crit-damage" value="0" step="0.1">
+                </div>
+                <div class="input-row">
+                    <label>반지 치피 (%)</label>
+                    <input type="number" id="ring-crit-damage" value="0" step="0.1">
+                </div>
+                <div class="input-row">
+                    <label>팔찌 치피 (%)</label>
+                    <input type="number" id="bracelet-crit-damage" value="0" step="0.1">
+                </div>
+                <div class="input-row">
+                    <label>예둔 치피 (%)</label>
+                    <input type="number" id="keen-crit-damage" value="0" step="0.1">
+                </div>
+            </div>
+
+            <!-- 진화형 피해 -->
+            <div class="stat-group">
+                <h2>진화형 피해</h2>
+                <div class="input-row">
+                    <label>서폿 유무</label>
+                    <input type="checkbox" id="support-exists">
+                </div>
+                <div class="input-row">
+                    <label>진화 카르마 랭크</label>
+                    <select id="karma-rank">
+                        <option value="0">0랭크 (0%)</option>
+                        <option value="1">1랭크 (1%)</option>
+                        <option value="2">2랭크 (2%)</option>
+                        <option value="3">3랭크 (3%)</option>
+                        <option value="4">4랭크 (4%)</option>
+                        <option value="5">5랭크 (5%)</option>
+                        <option value="6">6랭크 (6%)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 쿨타임 감소 -->
+            <div class="stat-group">
+                <h2>쿨타임 감소</h2>
+                <div class="input-row">
+                    <label>보석 쿨감 (%)</label>
+                    <input type="number" id="gem-cooldown" value="0" step="0.1" min="0" max="100">
+                </div>
+                <div class="input-row">
+                    <label>신속 스탯</label>
+                    <input type="number" id="swiftness-stat" value="0" step="1">
+                </div>
+                <div class="input-row">
+                    <label>쿨감 보정률 (%)</label>
+                    <input type="number" id="cooldown-efficiency" value="80" step="0.1" min="0" max="100">
+                </div>
+            </div>
+        </div>
+
+        <!-- 아크패시브 섹션 -->
+        <div class="arkpassive-section">
+            <h2>아크 패시브</h2>
+            
+            <!-- 2티어 -->
+            <div class="tier-group">
+                <h3>2티어</h3>
+                <div class="passive-grid">
+                    <div class="passive-item">
+                        <label>끝없는 마나</label>
+                        <select class="tier2" data-passive="endless-mana">
+                            <option value="0">선택 안함</option>
+                            <option value="1">1레벨 (쿨감 7%)</option>
+                            <option value="2">2레벨 (쿨감 14%)</option>
+                        </select>
+                    </div>
+                    <div class="passive-item">
+                        <label>금단의 주문</label>
+                        <select class="tier2" data-passive="forbidden-spell">
+                            <option value="0">선택 안함</option>
+                            <option value="1">1레벨 (진피 10%)</option>
+                            <option value="2">2레벨 (진피 20%)</option>
+                        </select>
+                    </div>
+                    <div class="passive-item">
+                        <label>예리한 감각</label>
+                        <select class="tier2" data-passive="sharp-sense">
+                            <option value="0">선택 안함</option>
+                            <option value="1">1레벨 (치적 4%, 진피 5%)</option>
+                            <option value="2">2레벨 (치적 8%, 진피 10%)</option>
+                        </select>
+                    </div>
+                    <div class="passive-item">
+                        <label>한계돌파</label>
+                        <select class="tier2" data-passive="breakthrough">
+                            <option value="0">선택 안함</option>
+                            <option value="1">1레벨 (진피 10%)</option>
+                            <option value="2">2레벨 (진피 20%)</option>
+                            <option value="3">3레벨 (진피 30%)</option>
+                        </select>
+                    </div>
+                    <div class="passive-item">
+                        <label>최적화 훈련</label>
+                        <select class="tier2" data-passive="optimization">
+                            <option value="0">선택 안함</option>
+                            <option value="1">1레벨 (쿨감 4%, 진피 5%)</option>
+                            <option value="2">2레벨 (쿨감 8%, 진피 10%)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3티어 -->
+            <div class="tier-group">
+                <h3>3티어</h3>
+                <div class="passive-grid">
+                    <div class="passive-item">
+                        <label>무한한 마력</label>
+                        <select class="tier3" data-passive="infinite-mana">
+                            <option value="0">선택 안함</option>
+                            <option value="1">1레벨 (진피 8%, 쿨감 7%)</option>
+                            <option value="2">2레벨 (진피 16%, 쿨감 14%)</option>
+                        </select>
+                    </div>
+                    <div class="passive-item">
+                        <label>혼신의 강타</label>
+                        <select class="tier3" data-passive="full-power">
+                            <option value="0">선택 안함</option>
+                            <option value="1">1레벨 (치적 12%, 진피 2%)</option>
+                            <option value="2">2레벨 (치적 24%, 진피 4%)</option>
+                        </select>
+                    </div>
+                    <div class="passive-item">
+                        <label>일격</label>
+                        <select class="tier3" data-passive="one-strike">
+                            <option value="0">선택 안함</option>
+                            <option value="1">1레벨 (치적 10%, 치피 16%)</option>
+                            <option value="2">2레벨 (치적 20%, 치피 32%)</option>
+                        </select>
+                    </div>
+                    <div class="passive-item">
+                        <label>파괴 전차</label>
+                        <select class="tier3" data-passive="destruction-tank">
+                            <option value="0">선택 안함</option>
+                            <option value="1">1레벨 (진피 12%)</option>
+                            <option value="2">2레벨 (진피 24%)</option>
+                        </select>
+                    </div>
+                    <div class="passive-item">
+                        <label>타이밍 지배</label>
+                        <select class="tier3" data-passive="timing-master">
+                            <option value="0">선택 안함</option>
+                            <option value="1">1레벨 (쿨감 5%, 진피 8%)</option>
+                            <option value="2">2레벨 (쿨감 10%, 진피 16%)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4티어 -->
+            <div class="tier-group">
+                <h3>4티어 엘릭서 (2개 고르면 됨)</h3>
+                <div class="passive-grid">
+                    <div class="passive-item">
+                        <label>회심</label>
+                        <input type="checkbox" class="tier4" data-passive="critical-blow" data-type="single">
+                    </div>
+                    <div class="passive-item">
+                        <label>달인</label>
+                        <input type="checkbox" class="tier4" data-passive="master" data-type="single">
+                    </div>
+                    <div class="passive-item">
+                        <label>분쇄</label>
+                        <input type="checkbox" class="tier4" data-passive="crush" data-type="single">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5티어 -->
+            <div class="tier-group">
+                <h3>5티어</h3>
+                <div class="passive-grid">
+                    <div class="passive-item">
+                        <label>뭉툭한 가시</label>
+                        <input type="radio" name="tier5" class="tier5" data-passive="blunt-thorn">
+                    </div>
+                    <div class="passive-item">
+                        <label>음속 돌파</label>
+                        <input type="radio" name="tier5" class="tier5" data-passive="sonic-break">
+                    </div>
+                    <div class="passive-item">
+                        <label>인파이팅</label>
+                        <input type="radio" name="tier5" class="tier5" data-passive="infighting">
+                    </div>
+                    <div class="passive-item">
+                        <label>입식 타격가</label>
+                        <input type="radio" name="tier5" class="tier5" data-passive="standing-striker">
+                    </div>
+                    <div class="passive-item">
+                        <label>마나 용광로</label>
+                        <input type="radio" name="tier5" class="tier5" data-passive="mana-furnace">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 계산 버튼 및 결과 -->
+        <div class="result-section">
+            <button id="calculate-btn">딜 기댓값 계산</button>
+            <div id="result-display"></div>
+            <div id="detailed-result"></div>
+        </div>
+    </div>
+
+    <script src="calculator.js"></script>
+</body>
+</html>
