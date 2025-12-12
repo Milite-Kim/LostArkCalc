@@ -110,12 +110,7 @@ function calculateCritRate(arkValues) {
     // 아크패시브 - 달인
     if (arkValues.tier4['master']) critRate += 7;
     
-    // 아크패시브 - 뭉툭한 가시 (치적 80%로 고정)
-    if (arkValues.tier5 === 'blunt-thorn') {
-        critRate = 80;
-    }
-    
-    return Math.min(critRate, 100); // 최대 100%
+    return critRate; // 원본 치적 그대로 반환
 }
 
 // 치명타 피해량 계산
@@ -253,7 +248,17 @@ function calculateDamageExpectation() {
     const arkValues = getArkPassiveValues();
     
     // 각 요소 계산
-    const critRate = calculateCritRate(arkValues) / 100; // 비율로 변환
+    const originalCritRate = calculateCritRate(arkValues); // 원본 치적
+    
+    // 딜 계산에 사용할 치적 결정 (뭉툭한 가시면 80%, 아니면 min(치적, 100))
+    let effectiveCritRate;
+    if (arkValues.tier5 === 'blunt-thorn') {
+        effectiveCritRate = 80;
+    } else {
+        effectiveCritRate = Math.min(originalCritRate, 100);
+    }
+    
+    const critRate = effectiveCritRate / 100; // 비율로 변환
     const critDamage = calculateCritDamage(arkValues); // 2.0 + 추가 치피
     const additionalDamage = calculateAdditionalDamage(arkValues); // 1 + 추피
     const evolutionDamage = calculateEvolutionDamage(arkValues); // 1 + 진피
@@ -268,7 +273,9 @@ function calculateDamageExpectation() {
     
     // 결과 표시
     displayResults(finalDamage, {
-        critRate: critRate * 100,
+        originalCritRate: originalCritRate, // 원본 치적 (화면에 표시)
+        effectiveCritRate: effectiveCritRate, // 실제 계산에 사용된 치적
+        isBluntThornActive: arkValues.tier5 === 'blunt-thorn',
         critDamage: critDamage * 100,
         critExpectation: critExpectation,
         additionalDamage: additionalDamage,
@@ -288,19 +295,19 @@ function displayResults(finalDamage, details) {
     resultDisplay.style.display = 'block';
     
     // 비치명/치명 분해 표시
-    const nonCritPortion = (1 - details.critRate / 100).toFixed(4);
-    const critPortion = ((details.critRate / 100) * (details.critDamage / 100) * details.damageIncrease).toFixed(4);
+    const nonCritPortion = (1 - details.effectiveCritRate / 100).toFixed(4);
+    const critPortion = ((details.effectiveCritRate / 100) * (details.critDamage / 100) * details.damageIncrease).toFixed(4);
     
     detailedResult.innerHTML = `
         <h3>상세 계산 결과</h3>
-        <p>치명타 적중률: ${details.critRate.toFixed(2)}%</p>
+        <p>치명타 적중률: ${details.originalCritRate.toFixed(2)}%</p>
         <p>치명타 피해량: ${details.critDamage.toFixed(2)}%</p>
         <p>진화형 피해: ${details.evolutionDamage.toFixed(4)}</p>
         <p>총 쿨감: ${details.cooldownReduction.toFixed(2)}%</p>
         <p>쿨감으로 인한 딜 증가: ${details.cooldownDamageIncrease.toFixed(4)}</p>
         <hr style="margin: 15px 0; border: none; border-top: 1px solid #d0d0c8;">
         <p style="font-weight: bold;">최종 계산식:</p>
-        <p style="margin-left: 20px;">((1 - ${(details.critRate / 100).toFixed(4)}) + (${(details.critRate / 100).toFixed(4)} × ${(details.critDamage / 100).toFixed(4)} × ${details.damageIncrease.toFixed(4)})) × ${details.evolutionDamage.toFixed(4)} × ${details.additionalDamage.toFixed(4)} × ${details.cooldownDamageIncrease.toFixed(4)}</p>
+        <p style="margin-left: 20px;">((1 - ${(details.effectiveCritRate / 100).toFixed(4)}) + (${(details.effectiveCritRate / 100).toFixed(4)} × ${(details.critDamage / 100).toFixed(4)} × ${details.damageIncrease.toFixed(4)})) × ${details.evolutionDamage.toFixed(4)} × ${details.additionalDamage.toFixed(4)} × ${details.cooldownDamageIncrease.toFixed(4)}</p>
         <p style="font-weight: bold; margin-left: 20px;">= ${finalDamage.toFixed(4)}</p>
     `;
     detailedResult.style.display = 'block';
